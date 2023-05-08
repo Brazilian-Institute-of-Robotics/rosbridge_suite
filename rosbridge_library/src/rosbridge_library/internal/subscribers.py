@@ -35,6 +35,7 @@ from threading import Lock, RLock
 
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from rclpy.qos import qos_profile_sensor_data
 from rosbridge_library.internal import ros_loader
 from rosbridge_library.internal.message_conversion import msg_class_type_repr
 from rosbridge_library.internal.outgoing_message import OutgoingMessage
@@ -115,11 +116,14 @@ class MultiSubscriber:
             reliability=ReliabilityPolicy.RELIABLE,
         )
 
-        infos = node_handle.get_publishers_info_by_topic(topic)
-        if any(pub.qos_profile.durability == DurabilityPolicy.TRANSIENT_LOCAL for pub in infos):
-            qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
-        if any(pub.qos_profile.reliability == ReliabilityPolicy.BEST_EFFORT for pub in infos):
-            qos.reliability = ReliabilityPolicy.BEST_EFFORT
+        if msg_type_string == "sensor_msgs/msg/Image":
+            qos = qos_profile_sensor_data
+        else:
+            infos = node_handle.get_publishers_info_by_topic(topic)
+            if any(pub.qos_profile.durability == DurabilityPolicy.TRANSIENT_LOCAL for pub in infos):
+                qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
+            if any(pub.qos_profile.reliability == ReliabilityPolicy.BEST_EFFORT for pub in infos):
+                qos.reliability = ReliabilityPolicy.BEST_EFFORT
 
         # Create the subscriber and associated member variables
         # Subscriptions is initialized with the current client to start with.
