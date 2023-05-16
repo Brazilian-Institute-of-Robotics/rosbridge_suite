@@ -103,6 +103,9 @@ class MultiSubscriber:
         if topic_type is not None and topic_type != msg_type_string:
             raise TypeConflictException(topic, topic_type, msg_type_string)
 
+        # If True: set topic QoS of type `Image` to `qos_profile_sensor_data`
+        self.image_qos_sensor_data = node_handle.get_parameter('image_qos_sensor_data').value
+
         # Certain combinations of publisher and subscriber QoS parameters are
         # incompatible. Here we make a "best effort" attempt to match existing
         # publishers for the requested topic. This is not perfect because more
@@ -116,7 +119,7 @@ class MultiSubscriber:
             reliability=ReliabilityPolicy.RELIABLE,
         )
 
-        if msg_type_string == "sensor_msgs/msg/Image":
+        if msg_type_string == "sensor_msgs/msg/Image" and self.image_qos_sensor_data:
             qos = qos_profile_sensor_data
         else:
             infos = node_handle.get_publishers_info_by_topic(topic)

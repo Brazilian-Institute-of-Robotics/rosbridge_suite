@@ -197,6 +197,8 @@ class RosbridgeWebsocketNode(Node):
 
         bson_only_mode = self.declare_parameter("bson_only_mode", False).value
 
+        self.declare_parameter("image_qos_sensor_data", True).value
+
         RosbridgeWebSocket.client_manager = ClientManager(self)
 
         # Publisher for number of connected clients
