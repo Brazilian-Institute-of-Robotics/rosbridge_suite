@@ -12,13 +12,15 @@
   <arg name="max_message_size" default="10000000" />
   <arg name="unregister_timeout" default="10.0" />
 
-  <arg name="use_compression" default="false" />
+  <arg name="use_compression" default="true" />
   <arg name="call_services_in_new_thread" default="false" />
 
   <arg name="topics_glob" default="" />
   <arg name="services_glob" default="" />
   <arg name="params_glob" default="" />
   <arg name="bson_only_mode" default="false" />
+
+  <arg name="image_qos_sensor_data" default="true" />
 
   <arg unless="$(var bson_only_mode)" name="binary_encoder" default="default"/>
 
@@ -58,6 +60,8 @@
       <param name="params_glob" value="$(var params_glob)"/>
 
       <param name="bson_only_mode" value="$(var bson_only_mode)"/>
+
+      <param name="image_qos_sensor_data" value="$(var image_qos_sensor_data)"/>
     </node>
   </group>
 
